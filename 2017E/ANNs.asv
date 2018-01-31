@@ -61,20 +61,21 @@ input = [
     salary_avgn; work_ration; infrastr_avgn
     ];
 
-input;
-output = hdi;
+input = input';
+output = hdi';
 
 %% 确定网络结构参数
 innum = 13;
 midnum = 14;
 outnum = 1;
 
-% 权值初始化
-% 其中，w均表示权重，b表示阈值
+%权值初始化
 w1=rands(midnum,innum);
 b1=rands(midnum,1);
 w2=rands(midnum,outnum);
 b2=rands(outnum,1);
+
+%{
 
 w2_1=w2;w2_2=w2_1;
 w1_1=w1;w1_2=w1_1;
@@ -84,49 +85,45 @@ b2_1=b2;b2_2=b2_1;
 %学习率
 xite=0.1;
 alfa=0.01;
-loopNumber=2000; % 学习次数
+loopNumber=10;
 I=zeros(1,midnum);
 Iout=zeros(1,midnum);
 FI=zeros(1,midnum);
-
-dw1=zeros(innum,midnum); % w的修正值
-db1=zeros(1,midnum); % b的修正值
-
+dw1=zeros(innum,midnum);
+db1=zeros(1,midnum);
 
 %% 网络训练
 E=zeros(1,loopNumber);
-input_size = size(input);
 for ii=1:loopNumber
     E(ii)=0;
-    for i=1:1:input_size(2)
+    for i=1:1:1500
        %% 网络预测输出
-        x=input(:,i);
+        x=inputn(:,i);
         % 隐含层输出
         for j=1:1:midnum
-            I(j)=input(:,i)'*w1(j,:)'+b1(j);
+            I(j)=inputn(:,i)'*w1(j,:)'+b1(j);
             Iout(j)=1/(1+exp(-I(j)));
         end
         % 输出层输出
         yn=w2'*Iout'+b2;
         
-       %% 权值阈值修正
-        % 计算误差
-        e=output(:,i)-yn;     
+       %% 权值阀值修正
+        %计算误差
+        e=output_train(:,i)-yn;     
         E(ii)=E(ii)+sum(abs(e));
         
-        % 计算权值变化率
+        %计算权值变化率
         dw2=e*Iout;
         db2=e';
         
         for j=1:1:midnum
             S=1/(1+exp(-I(j)));
             FI(j)=S*(1-S);
-        end
-        
+        end      
         for k=1:1:innum
             for j=1:1:midnum
-                dw1(k,j)=FI(j)*x(k)*(e(1)*w2(j,1));
-                db1(j)=FI(j)*(e(1)*w2(j,1));
+                dw1(k,j)=FI(j)*x(k)*(e(1)*w2(j,1)+e(2)*w2(j,2)+e(3)*w2(j,3)+e(4)*w2(j,4));
+                db1(j)=FI(j)*(e(1)*w2(j,1)+e(2)*w2(j,2)+e(3)*w2(j,3)+e(4)*w2(j,4));
             end
         end
            
@@ -141,22 +138,8 @@ for ii=1:loopNumber
         b2_2=b2_1;b2_1=b2;
     end
 end
+ 
 
-weight = zeros(1, innum);
-for i=1:innum;
-    sum_w = 0;
-    for j=1:midnum;
-        sum_w = sum_w + abs(w1(j,i));
-    end;
-    weight(1,i) = sum_w;
-end;
-
-sum_weight = sum(weight);
-weight = weight ./ sum_weight;
-
-
-
-%{
 %% 语音特征信号分类
 inputn_test=mapminmax('apply',input_test,inputps);
 fore=zeros(4,500);
@@ -173,6 +156,7 @@ for ii=1:1
 end
 
 %% 结果分析
+%根据网络输出找出数据属于哪类
 output_fore=zeros(1,500);
 for i=1:500
     output_fore(i)=find(fore(:,i)==max(fore(:,i)));
