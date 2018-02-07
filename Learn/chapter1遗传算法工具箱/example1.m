@@ -1,5 +1,5 @@
 clc
-clear all
+clear
 close all
 %% 画出函数图
 figure(1);
@@ -22,7 +22,7 @@ Chrom=crtbp(NIND,PRECI);                      %初始种群
 gen=0;                                  %代计数器
 X=bs2rv(Chrom,FieldD);                 %计算初始种群的十进制转换
 ObjV=sin(10*pi*X)./X;        %计算目标函数值
-while gen<MAXGEN
+while gen<MAXGEN;
    FitnV=ranking(ObjV);                               %分配适应度值
    SelCh=select('sus',Chrom,FitnV,GGAP);              %选择
    SelCh=recombin('xovsp',SelCh,px);                  %重组
@@ -36,7 +36,7 @@ while gen<MAXGEN
    [Y,I]=min(ObjV);
    trace(1,gen)=X(I);                            %记下每代的最优值
    trace(2,gen)=Y;                               %记下每代的最优值
-end
+end;
 plot(trace(1,:),trace(2,:),'bo');                            %画出每代的最优点
 grid on;
 plot(X,ObjV,'b*');   %画出最后一代的种群

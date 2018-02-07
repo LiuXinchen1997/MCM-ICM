@@ -1,5 +1,5 @@
 clc
-clear all
+clear
 close all
 %% »­³öº¯ÊýÍ¼
 figure(1);
