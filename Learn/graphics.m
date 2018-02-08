@@ -40,7 +40,41 @@ figure;
 fplot(@(x)cos(1./x), [-1,1]);
 %}
 
+%{
+% 三维曲线绘图
 t = 0:0.1:8*pi;
 plot3(sin(t), cos(t), t);
 title('螺旋曲线');
-xlabel('sin(t)', 'FontWeight', 'Font');
+xlabel('sin(t)', 'FontWeight', 'bold', 'FontAngle', 'italic');
+ylabel('cos(t)', 'FontWeight', 'bold', 'FontAngle', 'italic');
+zlabel('t', 'FontWeight', 'bold', 'FontAngle', 'italic');
+grid on;
+%}
+
+%{
+% 三维曲面绘制
+% 平面网格点的生成
+[X, Y] = meshgrid(-2:0.1:2, -2:0.1:2);
+Z = X .* exp(-X.^2 - Y.^2);
+surf(X, Y, Z);
+shading interp;
+%}
+
+%{
+% 绘制旋转体
+t = pi:0.01:3*pi;
+r = sin(t) + t;
+cylinder(r, 30);
+shading interp;
+%}
+
+%{
+% 面积图
+X = -2:2;
+Y = [3,5,2,4,1; 5,4,2,3,5; 3,4,5,2,1];
+area(X',Y');
+legend('item1', 'item2', 'item3');
+%}
+
+x = [200, 360, 120, 400, 320];
+pie3(x, [0 0 0 1 0]);
