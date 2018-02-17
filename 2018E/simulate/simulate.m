@@ -82,6 +82,7 @@ nanminrenshu_2 = [];
 
 %% 开始仿真
 year = 1997;
+year_frags = [];
 while true;
     preds = predict(wencha_cha_weights, rainfall_cha_weights, pop_can, year);
     pred_wencha_cha = wencha_cha(preds(1));
@@ -273,6 +274,7 @@ while true;
     ks = ks .* 1.972;
     bwa_frags = calc_frag_fun(factors, ks);
     disp(bwa_frags);
+    year_frags = [year_frags; year bwa_frags];
    
     if bwa_frags(1) >= tip_v && year >= 2015;
         disp('达到临界点！');
